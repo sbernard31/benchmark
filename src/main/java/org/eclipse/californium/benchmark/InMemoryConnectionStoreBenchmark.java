@@ -30,8 +30,8 @@ public class InMemoryConnectionStoreBenchmark {
 
     static final int nbConnection = 100_000;
 
-    @State(Scope.Thread)
-    public static class MyState {
+    @State(Scope.Benchmark)
+    public static class OriginalState {
 
         @Setup(Level.Trial)
         public void doSetup() throws InterruptedException {
@@ -57,30 +57,42 @@ public class InMemoryConnectionStoreBenchmark {
             connection = new Connection(InetSocketAddress.createUnresolved("host"+(nbConnection+r.nextInt(200_000)), 50000));
         }
     }
+    
+    @State(Scope.Benchmark)
+    public static class EnhancedState {
+
+        @Setup(Level.Trial)
+        public void doSetup() throws InterruptedException {
+            store = new  org.eclipse.californium.benchmark.InMemoryConnectionStore(100_000, 1);
+
+            for (int i = 0; i < nbConnection; i++) {
+                Connection connection = new Connection(InetSocketAddress.createUnresolved("host" + i, 50000));
+                store.put(connection);
+            }
+            r = new Random();
+            Thread.sleep(1000);
+        }
+
+        public org.eclipse.californium.benchmark.InMemoryConnectionStore store;
+        public Random r;
+        public InetSocketAddress socketAddr;
+        public Connection connection;
+
+        @Setup(Level.Invocation)
+        public void prepare() {
+            int i = r.nextInt(nbConnection);
+            socketAddr = InetSocketAddress.createUnresolved("host" + i, 50000);
+            connection = new Connection(InetSocketAddress.createUnresolved("host"+(nbConnection+r.nextInt(200_000)), 50000));
+        }
+    }
 
     @Benchmark
-    public void testGet(MyState state) {
+    public void testOriginalState(OriginalState state) {
         state.store.get(state.socketAddr);
     }
     
     @Benchmark
-    public void testPut(MyState state) {
-        state.store.put(state.connection);
+    public void testEnhanced(EnhancedState state) {
+    	state.store.get(state.socketAddr);
     }
-    
-    
-    public static void main(String[] args) {
-        try {
-            MyState myState = new MyState();
-   			myState.doSetup();
-    		myState.prepare();
-    		InMemoryConnectionStoreBenchmark bench = new InMemoryConnectionStoreBenchmark();
-    		bench.testGet(myState);
-		} catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-	}
-
 }

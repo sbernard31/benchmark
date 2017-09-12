@@ -16,7 +16,7 @@ import eu.javaspecialists.tjsn.concurrency.stripedexecutor.StripedRunnable;
 
 public class StripedExecutorBenchmark {
 
-	@State(Scope.Thread)
+	@State(Scope.Benchmark)
 	public static class FixedState {
 
 		@Setup(Level.Trial)
@@ -42,7 +42,7 @@ public class StripedExecutorBenchmark {
 		}
 	}
 
-	@State(Scope.Thread)
+	@State(Scope.Benchmark)
 	public static class SingleState {
 
 		@Setup(Level.Trial)
@@ -68,7 +68,7 @@ public class StripedExecutorBenchmark {
 		}
 	}
 
-	@State(Scope.Thread)
+	@State(Scope.Benchmark)
 	public static class PatchedStripedState {
 
 		@Setup(Level.Trial)
@@ -101,7 +101,7 @@ public class StripedExecutorBenchmark {
 		}
 	}
 
-	@State(Scope.Thread)
+	@State(Scope.Benchmark)
 	public static class StripedState {
 
 		@Setup(Level.Trial)
