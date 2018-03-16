@@ -38,7 +38,7 @@ public class InMemoryConnectionStoreBenchmark {
             store = new InMemoryConnectionStore(100_000, 1);
 
             for (int i = 0; i < nbConnection; i++) {
-                Connection connection = new Connection(InetSocketAddress.createUnresolved("host" + i, 50000));
+                Connection connection = new Connection(InetSocketAddress.createUnresolved("host" + i, 50000),null);
                 store.put(connection);
             }
             r = new Random();
@@ -54,7 +54,7 @@ public class InMemoryConnectionStoreBenchmark {
         public void prepare() {
             int i = r.nextInt(nbConnection);
             socketAddr = InetSocketAddress.createUnresolved("host" + i, 50000);
-            connection = new Connection(InetSocketAddress.createUnresolved("host"+(nbConnection+r.nextInt(200_000)), 50000));
+            connection = new Connection(InetSocketAddress.createUnresolved("host"+(nbConnection+r.nextInt(200_000)), 50000),null);
         }
     }
     
@@ -66,7 +66,7 @@ public class InMemoryConnectionStoreBenchmark {
             store = new  org.eclipse.californium.benchmark.InMemoryConnectionStore(100_000, 1);
 
             for (int i = 0; i < nbConnection; i++) {
-                Connection connection = new Connection(InetSocketAddress.createUnresolved("host" + i, 50000));
+                Connection connection = new Connection(InetSocketAddress.createUnresolved("host" + i, 50000),null);
                 store.put(connection);
             }
             r = new Random();
@@ -82,7 +82,7 @@ public class InMemoryConnectionStoreBenchmark {
         public void prepare() {
             int i = r.nextInt(nbConnection);
             socketAddr = InetSocketAddress.createUnresolved("host" + i, 50000);
-            connection = new Connection(InetSocketAddress.createUnresolved("host"+(nbConnection+r.nextInt(200_000)), 50000));
+            connection = new Connection(InetSocketAddress.createUnresolved("host"+(nbConnection+r.nextInt(200_000)), 50000),null);
         }
     }
 

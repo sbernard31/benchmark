@@ -96,14 +96,12 @@ public class GenerateCookieBenchmark {
 	private static ClientHello createClientHello(DTLSSession sessionToResume) {
 		ClientHello hello = null;
 		if (sessionToResume == null) {
-			hello = new ClientHello(new ProtocolVersion(), new SecureRandom(),
+			hello = new ClientHello(new ProtocolVersion(), new SecureRandom(),Collections.<CipherSuite> emptyList(),
 					Collections.<CertificateType> emptyList(), Collections.<CertificateType> emptyList(),
 					new InetSocketAddress(2000));
 		} else {
 			hello = new ClientHello(new ProtocolVersion(), new SecureRandom(), sessionToResume, null, null);
 		}
-		hello.addCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CCM_8);
-		hello.addCipherSuite(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8);
 		hello.addCompressionMethod(CompressionMethod.NULL);
 		hello.setMessageSeq(0);
 		return hello;
