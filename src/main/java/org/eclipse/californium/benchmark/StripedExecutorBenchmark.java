@@ -67,13 +67,39 @@ public class StripedExecutorBenchmark {
 			};
 		}
 	}
+	
+	@State(Scope.Benchmark)
+    public static class ScheduledState {
+
+        @Setup(Level.Trial)
+        public void doSetup() throws InterruptedException {
+            executor = Executors.newScheduledThreadPool(10);
+        }
+
+        @TearDown(Level.Trial)
+        public void tearDown() {
+            executor.shutdownNow();
+        }
+
+        public ExecutorService executor;
+        public Runnable runnable;
+
+        @Setup(Level.Invocation)
+        public void prepare() {
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                }
+            };
+        }
+    }
 
 	@State(Scope.Benchmark)
 	public static class PatchedStripedState {
 
 		@Setup(Level.Trial)
 		public void doSetup() throws InterruptedException {
-			executor = new org.eclipse.californium.benchmark.StripedExecutorService();
+			executor = new org.eclipse.californium.benchmark.StripedExecutorService(10);
 		}
 
 		@TearDown(Level.Trial)
@@ -106,7 +132,7 @@ public class StripedExecutorBenchmark {
 
 		@Setup(Level.Trial)
 		public void doSetup() throws InterruptedException {
-			executor = new StripedExecutorService();
+			executor = new StripedExecutorService(10);
 		}
 
 		@TearDown(Level.Trial)
@@ -154,4 +180,9 @@ public class StripedExecutorBenchmark {
 	public void testPatchedStripedExecutor(PatchedStripedState state) {
 		state.executor.execute(state.runnable);
 	}
+	
+	@Benchmark
+    public void testScheduledExecutor(ScheduledState state) {
+        state.executor.execute(state.runnable);
+    }
 }
